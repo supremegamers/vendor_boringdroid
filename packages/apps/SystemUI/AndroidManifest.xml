@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cobra.systemui">
+
+    <uses-permission android:name="com.android.systemui.permission.PLUGIN" />
+
+    <application>
+        <service
+            android:name=".SystemUIOverlay"
+            android:label="@string/plugin_label">
+            <intent-filter>
+                <action android:name="com.android.systemui.action.PLUGIN_OVERLAY" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>
