@@ -8,7 +8,7 @@
     <application>
         <service
             android:name=".SystemUIOverlay"
-            android:label="@string/plugin_label">
+            android:label="@string/name">
             <intent-filter>
                 <action android:name="com.android.systemui.action.PLUGIN_OVERLAY" />
             </intent-filter>

@@ -10,22 +10,16 @@ import com.android.systemui.plugins.annotations.Requires;
 public class SystemUIOverlay implements OverlayPlugin {
     @Override
     public void setup(View statusBar, View navBar) {
-
     }
 
     @Override
     public boolean holdStatusBarOpen() {
-        return false;
+        return true;
     }
 
     @Override
     public void setCollapseDesired(boolean collapseDesired) {
 
-    }
-
-    @Override
-    public int getVersion() {
-        return 0;
     }
 
     @Override
