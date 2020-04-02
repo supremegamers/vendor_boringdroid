@@ -14,7 +14,7 @@ public class SystemUIOverlay implements OverlayPlugin {
 
     @Override
     public boolean holdStatusBarOpen() {
-        return true;
+        return false;
     }
 
     @Override
