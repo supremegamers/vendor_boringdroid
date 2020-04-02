@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/nav_button_size"
+    android:height="@dimen/nav_button_size"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M53.75 53.75h-28.66667v-28.66667h28.66667zM100.33333 53.75h-28.66667v-28.66667h28.66667zM146.91667 53.75h-28.66667v-28.66667h28.66667zM53.75 100.33333h-28.66667v-28.66667h28.66667zM100.33333 100.33333h-28.66667v-28.66667h28.66667zM146.91667 100.33333h-28.66667v-28.66667h28.66667zM53.75 146.91667h-28.66667v-28.66667h28.66667zM100.33333 146.91667h-28.66667v-28.66667h28.66667zM146.91667 146.91667h-28.66667v-28.66667h28.66667z" />
+</vector>

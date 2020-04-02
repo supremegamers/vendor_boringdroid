@@ -7,6 +7,12 @@
     <uses-permission android:name="com.android.systemui.permission.PLUGIN" />
 
     <application tools:ignore="AllowBackup,MissingApplicationIcon">
+        <activity android:name=".DebugActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".SystemUIOverlay"
             android:label="@string/system_ui_overlay_name"

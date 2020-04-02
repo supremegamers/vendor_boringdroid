@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="name" translatable="false">Cobra SystemUI</string>
+    <string name="system_ui_overlay_name" translatable="false">Cobra SystemUI overlay</string>
+    <string name="nav_bar_button_factory_name" translatable="false">Cobra nav bar button factory</string>
 </resources>
