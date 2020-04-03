@@ -7,7 +7,9 @@
     <uses-permission android:name="com.android.systemui.permission.PLUGIN" />
 
     <application tools:ignore="AllowBackup,MissingApplicationIcon">
-        <activity android:name=".DebugActivity">
+        <activity
+            android:name=".DebugActivity"
+            android:label="@string/system_ui_debug_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

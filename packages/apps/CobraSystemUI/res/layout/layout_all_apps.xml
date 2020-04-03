@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
-    <ImageButton
-        android:layout_width="@dimen/nav_button_size"
+    <GridView
+        android:id="@+id/gv_all_apps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/all_app_group_margin_top"
+        android:horizontalSpacing="@dimen/all_apps_item_spacing_horizontal"
+        android:numColumns="@integer/all_apps_column_number"
+        android:verticalSpacing="@dimen/all_apps_item_spacing_vertical" />
+
+    <TextView
+        android:id="@+id/gv_empty_holder"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
-        android:src="@drawable/bt_all_apps"
-        tools:ignore="ContentDescription" />
-</FrameLayout>
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/gv_empty_holder_hint"
+        android:visibility="gone" />
+</LinearLayout>
