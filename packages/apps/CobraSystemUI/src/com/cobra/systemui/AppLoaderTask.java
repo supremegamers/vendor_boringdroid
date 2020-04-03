@@ -57,6 +57,10 @@ public class AppLoaderTask implements Runnable {
             appInfo.setIcon(info.getIcon(0));
             mAllApps.add(appInfo);
         }
+        mAllApps.sort(
+                (appInfoOne, appInfoTwo)
+                        -> appInfoOne.getName().compareTo(appInfoTwo.getName())
+        );
         Handler target = getTarget();
         if (target != null) {
             target.sendEmptyMessage(HandlerConstant.H_LOAD_SUCCEED);
