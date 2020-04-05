@@ -9,4 +9,11 @@
     <dimen name="app_info_icon_width">36dp</dimen>
     <dimen name="app_info_icon_height">36dp</dimen>
     <dimen name="all_app_group_margin_top">20dp</dimen>
+    <dimen name="task_info_icon_size">26dp</dimen>
+    <dimen name="line_long_width">30dp</dimen>
+    <dimen name="line_long_height">2dp</dimen>
+    <dimen name="line_short_width">15dp</dimen>
+    <dimen name="line_short_height">2dp</dimen>
+    <dimen name="iv_highlight_line_margin_top">5dp</dimen>
+    <dimen name="task_info_item_padding_horizontal">5dp</dimen>
 </resources>

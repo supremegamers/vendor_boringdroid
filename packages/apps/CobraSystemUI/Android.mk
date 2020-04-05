@@ -7,6 +7,9 @@ LOCAL_PACKAGE_NAME := CobraSystemUI
 
 LOCAL_JAVA_LIBRARIES := SystemUIPluginLib
 
+LOCAL_STATIC_ANDROID_LIBRARIES := \
+    androidx.recyclerview_recyclerview
+
 LOCAL_PRIVATE_PLATFORM_APIS := true
 LOCAL_CERTIFICATE := platform
 LOCAL_PROGUARD_ENABLED := disabled
