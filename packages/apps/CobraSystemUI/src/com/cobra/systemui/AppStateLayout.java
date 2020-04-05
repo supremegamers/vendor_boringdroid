@@ -244,8 +244,4 @@ public class AppStateLayout extends RecyclerView {
             }
         }
     }
-
-    private interface TaskIconClickCallback {
-        void onTaskIconCLick(int taskId);
-    }
 }
