@@ -1,5 +1,6 @@
 package com.cobra.systemui;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -138,7 +139,6 @@ public class AppStateLayout extends RecyclerView {
             List<LauncherActivityInfo> infoList = mLaunchApps.getActivityList(packageName, userHandle);
             if (infoList.size() > 0 && infoList.get(0) != null) {
                 taskInfo.setIcon(infoList.get(0).getIcon(0));
-                android.util.Log.e(TAG, "package " + packageName + ", icon " + taskInfo.getIcon());
                 break;
             }
         }
@@ -147,16 +147,19 @@ public class AppStateLayout extends RecyclerView {
             case APP_STATE_KEY_ADD_TASK:
                 mTasks.add(taskInfo);
                 topTaskId = taskInfo.getId();
-                android.util.Log.e(TAG, "add task " + taskInfo + ", id " + topTaskId);
                 break;
             case APP_STATE_KEY_REMOVE_TASK:
                 mTasks.remove(taskInfo);
                 break;
             case APP_STATE_KEY_TOP_TASK:
+                int index = mTasks.indexOf(taskInfo);
                 mTasks.remove(taskInfo);
-                mTasks.add(taskInfo);
+                if (index >= 0) {
+                    mTasks.add(index, taskInfo);
+                } else {
+                    mTasks.add(taskInfo);
+                }
                 topTaskId = taskInfo.getId();
-                android.util.Log.e(TAG, "top task " + taskInfo + ", id " + topTaskId);
                 break;
             default:
                 break;
@@ -184,9 +187,12 @@ public class AppStateLayout extends RecyclerView {
         private List<TaskInfo> mTasks = new ArrayList<>();
         private Context mContext;
         private int mTopTaskId = -1;
+        private ActivityManager mActivityManager;
 
-        public TaskAdapter(Context context) {
+        public TaskAdapter(@NonNull Context context) {
             mContext = context;
+            mActivityManager =
+                    (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         }
 
         @NonNull
@@ -208,6 +214,9 @@ public class AppStateLayout extends RecyclerView {
             } else {
                 holder.mHighLightLineTV.setImageResource(R.drawable.line_short);
             }
+            holder.mIconIV.setOnClickListener(
+                    v -> mActivityManager.moveTaskToFront(taskInfo.getId(), 0)
+            );
         }
 
         @Override
@@ -234,5 +243,9 @@ public class AppStateLayout extends RecyclerView {
                 mHighLightLineTV = taskInfoLayout.findViewById(R.id.iv_highlight_line);
             }
         }
+    }
+
+    private interface TaskIconClickCallback {
+        void onTaskIconCLick(int taskId);
     }
 }
