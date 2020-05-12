@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="system_ui_overlay_name" translatable="false">Cobra SystemUI overlay</string>
-    <string name="nav_bar_button_factory_name" translatable="false">Cobra nav bar button factory</string>
-    <string name="gv_empty_holder_hint">Empty app list</string>
-    <string name="system_ui_debug_name">CobraSystemUIDebug</string>
-</resources>

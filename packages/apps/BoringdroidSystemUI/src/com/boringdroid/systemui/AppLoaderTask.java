@@ -1,4 +1,4 @@
-package com.cobra.systemui;
+package com.boringdroid.systemui;
 
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;

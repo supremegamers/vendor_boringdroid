@@ -3,7 +3,7 @@ include $(CLEAR_VARS)
 
 LOCAL_USE_AAPT2 := true
 
-LOCAL_PACKAGE_NAME := CobraSystemUI
+LOCAL_PACKAGE_NAME := BoringdroidSystemUI
 
 LOCAL_JAVA_LIBRARIES := SystemUIPluginLib
 

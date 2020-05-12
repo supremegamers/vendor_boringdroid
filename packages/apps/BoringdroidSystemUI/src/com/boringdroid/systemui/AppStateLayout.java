@@ -1,4 +1,4 @@
-package com.cobra.systemui;
+package com.boringdroid.systemui;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
@@ -23,6 +23,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.boringdroid.systemui.R;
 
 import java.util.ArrayList;
 import java.util.List;

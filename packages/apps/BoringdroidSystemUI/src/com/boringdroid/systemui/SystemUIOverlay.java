@@ -1,4 +1,4 @@
-package com.cobra.systemui;
+package com.boringdroid.systemui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 
 import com.android.systemui.plugins.OverlayPlugin;
 import com.android.systemui.plugins.annotations.Requires;
+import com.boringdroid.systemui.R;
 
 @Requires(target = OverlayPlugin.class, version = OverlayPlugin.VERSION)
 public class SystemUIOverlay implements OverlayPlugin {

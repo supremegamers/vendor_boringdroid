@@ -1,4 +1,4 @@
-package com.cobra.systemui;
+package com.boringdroid.systemui;
 
 public class HandlerConstant {
     public static final int H_LOAD_SUCCEED = 1000;

@@ -1,4 +1,4 @@
-package com.cobra.systemui;
+package com.boringdroid.systemui;
 
 import android.content.ComponentName;
 import android.graphics.drawable.Drawable;

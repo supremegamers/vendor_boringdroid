@@ -2,14 +2,14 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.cobra.systemui">
+    package="com.boringdroid.systemui">
 
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="com.android.systemui.permission.PLUGIN" />
 
     <application tools:ignore="AllowBackup,MissingApplicationIcon">
         <service
-            android:name=".SystemUIOverlay"
+            android:name="com.boringdroid.systemui.SystemUIOverlay"
             android:label="@string/system_ui_overlay_name"
             tools:ignore="ExportedService,Instantiatable">
             <intent-filter>
