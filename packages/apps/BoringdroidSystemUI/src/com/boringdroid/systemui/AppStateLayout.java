@@ -4,8 +4,10 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.ResolveInfo;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
@@ -119,7 +121,7 @@ public class AppStateLayout extends RecyclerView {
             Log.e(TAG, "The part of id is not correct " + splits[2]);
             return;
         }
-        int id = -1;
+        int id;
         try {
             id = Integer.parseInt(idSplits[1]);
         } catch (NumberFormatException e) {
@@ -136,6 +138,14 @@ public class AppStateLayout extends RecyclerView {
             taskInfo.setPackageName(realActivityComponentName.getPackageName());
         }
         String packageName = taskInfo.getPackageName();
+        if (isLauncher(getContext(), packageName)) {
+            Log.d(TAG, "Ignore launcher " + packageName);
+            if (APP_STATE_KEY_TOP_TASK.equals(key)) {
+                mAdapter.setTopTaskId(-1);
+                mAdapter.notifyDataSetChanged();
+            }
+            return;
+        }
         List<UserHandle> userHandles = mUserManager.getUserProfiles();
         for (UserHandle userHandle : userHandles) {
             List<LauncherActivityInfo> infoList = mLaunchApps.getActivityList(packageName, userHandle);
@@ -171,6 +181,14 @@ public class AppStateLayout extends RecyclerView {
             mAdapter.setTopTaskId(topTaskId);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    private boolean isLauncher(Context context, String packageName) {
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = context.getPackageManager().resolveActivity(intent, 0);
+        return res != null && res.activityInfo != null
+                && packageName.equals(res.activityInfo.packageName);
     }
 
     private class AppStateObserver extends ContentObserver {
