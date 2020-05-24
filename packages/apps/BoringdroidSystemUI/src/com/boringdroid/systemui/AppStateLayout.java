@@ -26,8 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.boringdroid.systemui.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,6 +139,14 @@ public class AppStateLayout extends RecyclerView {
         if (isLauncher(getContext(), packageName)) {
             Log.d(TAG, "Ignore launcher " + packageName);
             if (APP_STATE_KEY_TOP_TASK.equals(key)) {
+                mAdapter.setTopTaskId(-1);
+                mAdapter.notifyDataSetChanged();
+            }
+            return;
+        }
+        if (packageName != null && packageName.startsWith("com.android.systemui")) {
+            Log.d(TAG, "Ignore systemui " + packageName);
+            if (APP_STATE_KEY_ADD_TASK.equals(key) || APP_STATE_KEY_TOP_TASK.equals(key)) {
                 mAdapter.setTopTaskId(-1);
                 mAdapter.notifyDataSetChanged();
             }
