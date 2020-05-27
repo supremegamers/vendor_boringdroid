@@ -31,9 +31,9 @@ import java.util.List;
 
 public class AppStateLayout extends RecyclerView {
     private static final String TAG = "AppStateLayout";
-    private static final String APP_STATE_KEY_ADD_TASK = "cobra_app_state_add_task";
-    private static final String APP_STATE_KEY_REMOVE_TASK = "cobra_app_state_remove_task";
-    private static final String APP_STATE_KEY_TOP_TASK = "cobra_app_state_top_task";
+    private static final String APP_STATE_KEY_ADD_TASK = "boring_app_state_add_task";
+    private static final String APP_STATE_KEY_REMOVE_TASK = "boring_app_state_remove_task";
+    private static final String APP_STATE_KEY_TOP_TASK = "boring_app_state_top_task";
 
     private LauncherApps mLaunchApps;
     private UserManager mUserManager;
