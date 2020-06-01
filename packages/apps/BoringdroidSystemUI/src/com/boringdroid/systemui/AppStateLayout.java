@@ -1,21 +1,14 @@
 package com.boringdroid.systemui;
 
 import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ResolveInfo;
-import android.database.ContentObserver;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.provider.Settings;
-import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,20 +19,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_UNDEFINED;
+
 public class AppStateLayout extends RecyclerView {
     private static final String TAG = "AppStateLayout";
-    private static final String APP_STATE_KEY_ADD_TASK = "boring_app_state_add_task";
-    private static final String APP_STATE_KEY_REMOVE_TASK = "boring_app_state_remove_task";
-    private static final String APP_STATE_KEY_TOP_TASK = "boring_app_state_top_task";
 
+    private AppStateListener mListener = new AppStateListener();
     private LauncherApps mLaunchApps;
     private UserManager mUserManager;
-    private ContentResolver mContentResolver;
-    private AppStateObserver mObserver = new AppStateObserver();
-    private ArrayMap<Uri, String> mListenUris = new ArrayMap<>();
     private List<TaskInfo> mTasks = new ArrayList<>();
     private TaskAdapter mAdapter;
 
@@ -55,7 +48,6 @@ public class AppStateLayout extends RecyclerView {
         super(context, attrs, defStyleAttr);
         mLaunchApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-        mContentResolver = context.getContentResolver();
         LinearLayoutManager manager =
                 new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false);
         setLayoutManager(manager);
@@ -67,91 +59,42 @@ public class AppStateLayout extends RecyclerView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Uri addTaskUri = Settings.Secure.getUriFor(APP_STATE_KEY_ADD_TASK);
-        mContentResolver.registerContentObserver(addTaskUri, false, mObserver);
-        mListenUris.put(addTaskUri, APP_STATE_KEY_ADD_TASK);
-        Uri removeTaskUri = Settings.Secure.getUriFor(APP_STATE_KEY_REMOVE_TASK);
-        mContentResolver.registerContentObserver(removeTaskUri, false, mObserver);
-        mListenUris.put(removeTaskUri, APP_STATE_KEY_REMOVE_TASK);
-        Uri topTaskUri = Settings.Secure.getUriFor(APP_STATE_KEY_TOP_TASK);
-        mContentResolver.registerContentObserver(topTaskUri, false, mObserver);
-        mListenUris.put(topTaskUri, APP_STATE_KEY_TOP_TASK);
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mListener);
     }
+
 
     @Override
     protected void onDetachedFromWindow() {
-        mContentResolver.unregisterContentObserver(mObserver);
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mListener);
         super.onDetachedFromWindow();
     }
 
-    private void onAppStateChanged(Uri uri) {
-        String key = mListenUris.get(uri);
-        if (key == null) {
-            Log.e(TAG, "Can't find key for uri " + uri);
-            return;
-        }
-        String value = Settings.Secure.getString(mContentResolver, key);
-        String[] splits = value.split(";");
-        if (splits.length != 3) {
-            Log.e(TAG, "The value of " + key + " size is not correct, " + value);
-            return;
-        }
-        String[] originSplits = splits[0].split(":");
-        if (originSplits.length != 2) {
-            Log.e(TAG, "The part of origin activity component name is not correct " + splits[0]);
-            return;
-        }
-        ComponentName originActivityComponentName =
-                ComponentName.unflattenFromString(originSplits[1]);
-        String[] realSplits = splits[1].split(":");
-        if (realSplits.length != 2) {
-            Log.e(TAG, "The part of real activity component name is not correct " + splits[1]);
-            return;
-        }
-        ComponentName realActivityComponentName =
-                ComponentName.unflattenFromString(realSplits[1]);
-        if (originActivityComponentName == null && realActivityComponentName == null) {
-            Log.e(TAG, "The origin and real activity component name can't be null both");
-            return;
-        }
-        String[] idSplits = splits[2].split(":");
-        if (idSplits.length != 2) {
-            Log.e(TAG, "The part of id is not correct " + splits[2]);
-            return;
-        }
-        int id;
-        try {
-            id = Integer.parseInt(idSplits[1]);
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "Failed to parse id " + idSplits[1]);
-            return;
-        }
-        TaskInfo taskInfo = new TaskInfo();
-        taskInfo.setId(id);
-        taskInfo.setOriginActivityComponentName(originActivityComponentName);
-        taskInfo.setRealActivityComponentName(realActivityComponentName);
-        if (originActivityComponentName != null) {
-            taskInfo.setPackageName(originActivityComponentName.getPackageName());
-        } else {
-            taskInfo.setPackageName(realActivityComponentName.getPackageName());
-        }
-        String packageName = taskInfo.getPackageName();
+    private void removeTask(int taskId) {
+        mTasks.removeIf(taskInfo -> taskInfo.getId() == taskId);
+        mAdapter.setData(mTasks);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void topTask(ActivityManager.RunningTaskInfo runningTaskInfo) {
+        String packageName = runningTaskInfo.baseActivity == null ?
+                null : runningTaskInfo.baseActivity.getPackageName();
         if (isLauncher(getContext(), packageName)) {
             Log.d(TAG, "Ignore launcher " + packageName);
-            if (APP_STATE_KEY_TOP_TASK.equals(key)) {
-                mAdapter.setTopTaskId(-1);
-                mAdapter.notifyDataSetChanged();
-            }
+            mAdapter.setTopTaskId(-1);
+            mAdapter.notifyDataSetChanged();
             return;
         }
         if (packageName != null && packageName.startsWith("com.android.systemui")) {
             Log.d(TAG, "Ignore systemui " + packageName);
-            if (APP_STATE_KEY_ADD_TASK.equals(key) || APP_STATE_KEY_TOP_TASK.equals(key)) {
-                mAdapter.setTopTaskId(-1);
-                mAdapter.notifyDataSetChanged();
-            }
+            mAdapter.setTopTaskId(-1);
+            mAdapter.notifyDataSetChanged();
             return;
         }
+        TaskInfo taskInfo = new TaskInfo();
+        taskInfo.setId(runningTaskInfo.id);
+        taskInfo.setBaseActivityComponentName(runningTaskInfo.baseActivity);
+        taskInfo.setRealActivityComponentName(runningTaskInfo.topActivity);
+        taskInfo.setPackageName(packageName);
         List<UserHandle> userHandles = mUserManager.getUserProfiles();
         for (UserHandle userHandle : userHandles) {
             List<LauncherActivityInfo> infoList = mLaunchApps.getActivityList(packageName, userHandle);
@@ -160,32 +103,11 @@ public class AppStateLayout extends RecyclerView {
                 break;
             }
         }
-        int topTaskId = -1;
-        switch (key) {
-            case APP_STATE_KEY_ADD_TASK:
-                mTasks.add(taskInfo);
-                topTaskId = taskInfo.getId();
-                break;
-            case APP_STATE_KEY_REMOVE_TASK:
-                mTasks.remove(taskInfo);
-                break;
-            case APP_STATE_KEY_TOP_TASK:
-                int index = mTasks.indexOf(taskInfo);
-                mTasks.remove(taskInfo);
-                if (index >= 0) {
-                    mTasks.add(index, taskInfo);
-                } else {
-                    mTasks.add(taskInfo);
-                }
-                topTaskId = taskInfo.getId();
-                break;
-            default:
-                break;
-        }
+        int index = mTasks.indexOf(taskInfo);
+        mTasks.remove(taskInfo);
+        mTasks.add(index >= 0 ? index : mTasks.size(), taskInfo);
         mAdapter.setData(mTasks);
-        if (topTaskId > 0) {
-            mAdapter.setTopTaskId(topTaskId);
-        }
+        mAdapter.setTopTaskId(taskInfo.getId());
         mAdapter.notifyDataSetChanged();
     }
 
@@ -197,15 +119,25 @@ public class AppStateLayout extends RecyclerView {
                 && packageName.equals(res.activityInfo.packageName);
     }
 
-    private class AppStateObserver extends ContentObserver {
-        public AppStateObserver() {
-            super(new Handler(Looper.getMainLooper()));
+    private class AppStateListener extends TaskStackChangeListener {
+        @Override
+        public void onTaskStackChanged() {
+            super.onTaskStackChanged();
+            ActivityManager.RunningTaskInfo info =
+                    ActivityManagerWrapper
+                            .getInstance()
+                            .getRunningTask(ACTIVITY_TYPE_UNDEFINED);
+            Log.d(TAG, "onTaskStackChanged " + info);
+            if (info != null) {
+                topTask(info);
+            }
         }
 
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange, uri);
-            onAppStateChanged(uri);
+        public void onTaskRemoved(int taskId) {
+            super.onTaskRemoved(taskId);
+            Log.d(TAG, "onTaskRemoved " + taskId);
+            removeTask(taskId);
         }
     }
 

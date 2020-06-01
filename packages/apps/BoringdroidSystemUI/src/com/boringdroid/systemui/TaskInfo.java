@@ -5,21 +5,13 @@ import android.graphics.drawable.Drawable;
 
 public class TaskInfo {
     private int mId;
-    private ComponentName mOriginActivityComponentName;
+    private ComponentName mBaseActivityComponentName;
     private ComponentName mRealActivityComponentName;
     private String mPackageName;
     private Drawable mIcon;
 
     public int getId() {
         return mId;
-    }
-
-    public ComponentName getOriginActivityComponentName() {
-        return mOriginActivityComponentName;
-    }
-
-    public ComponentName getRealActivityComponentName() {
-        return mRealActivityComponentName;
     }
 
     public String getPackageName() {
@@ -30,8 +22,8 @@ public class TaskInfo {
         return mIcon;
     }
 
-    public void setOriginActivityComponentName(ComponentName originActivityComponentName) {
-        mOriginActivityComponentName = originActivityComponentName;
+    public void setBaseActivityComponentName(ComponentName baseActivityComponentName) {
+        mBaseActivityComponentName = baseActivityComponentName;
     }
 
     public void setRealActivityComponentName(ComponentName realActivityComponentName) {
@@ -67,7 +59,7 @@ public class TaskInfo {
 
     @Override
     public String toString() {
-        return "Task id " + mId + ", origin " + mOriginActivityComponentName
+        return "Task id " + mId + ", origin " + mBaseActivityComponentName
                 + ", real " + mRealActivityComponentName + ", package " + mPackageName;
     }
 }

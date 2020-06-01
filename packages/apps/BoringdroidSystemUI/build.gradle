@@ -68,7 +68,8 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly fileTree(include: ['*.jar'], dir: 'libs/compile')
+    implementation fileTree(include: ['*.jar'], dir: 'libs/impl')
     // Current system use this version, we should keep it.
     implementation group: 'androidx.recyclerview', name: 'recyclerview', version: '1.0.0'
 
