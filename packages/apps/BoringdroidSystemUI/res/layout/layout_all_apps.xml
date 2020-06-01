@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:background="@android:color/white">
 
-    <GridView
-        android:id="@+id/gv_all_apps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/all_app_group_margin_top"
-        android:horizontalSpacing="@dimen/all_apps_item_spacing_horizontal"
-        android:numColumns="@integer/all_apps_column_number"
-        android:verticalSpacing="@dimen/all_apps_item_spacing_vertical" />
-
-    <TextView
-        android:id="@+id/gv_empty_holder"
+    <com.boringdroid.systemui.AllAppsLayout
+        android:id="@+id/all_apps_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/gv_empty_holder_hint"
-        android:visibility="gone" />
-</LinearLayout>
+        android:layout_marginStart="@dimen/all_apps_margin_horizontal"
+        android:layout_marginTop="@dimen/all_apps_margin_vertical"
+        android:layout_marginEnd="@dimen/all_apps_margin_horizontal"
+        android:layout_marginBottom="@dimen/all_apps_margin_vertical"
+        android:scrollbars="vertical" />
+</RelativeLayout>

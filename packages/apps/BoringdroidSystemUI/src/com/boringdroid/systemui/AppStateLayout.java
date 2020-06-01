@@ -1,7 +1,6 @@
 package com.boringdroid.systemui;
 
 import android.app.ActivityManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
@@ -30,11 +29,11 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACT
 public class AppStateLayout extends RecyclerView {
     private static final String TAG = "AppStateLayout";
 
-    private AppStateListener mListener = new AppStateListener();
-    private LauncherApps mLaunchApps;
-    private UserManager mUserManager;
-    private List<TaskInfo> mTasks = new ArrayList<>();
-    private TaskAdapter mAdapter;
+    private final AppStateListener mListener = new AppStateListener();
+    private final LauncherApps mLaunchApps;
+    private final UserManager mUserManager;
+    private final List<TaskInfo> mTasks = new ArrayList<>();
+    private final TaskAdapter mAdapter;
 
     public AppStateLayout(Context context) {
         this(context, null);
@@ -61,7 +60,6 @@ public class AppStateLayout extends RecyclerView {
         super.onAttachedToWindow();
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mListener);
     }
-
 
     @Override
     protected void onDetachedFromWindow() {
@@ -142,10 +140,10 @@ public class AppStateLayout extends RecyclerView {
     }
 
     private static class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-        private List<TaskInfo> mTasks = new ArrayList<>();
-        private Context mContext;
+        private final List<TaskInfo> mTasks = new ArrayList<>();
+        private final Context mContext;
+        private final ActivityManager mActivityManager;
         private int mTopTaskId = -1;
-        private ActivityManager mActivityManager;
 
         public TaskAdapter(@NonNull Context context) {
             mContext = context;
@@ -166,13 +164,13 @@ public class AppStateLayout extends RecyclerView {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             TaskInfo taskInfo = mTasks.get(position);
-            holder.mIconIV.setImageDrawable(taskInfo.getIcon());
+            holder.iconIV.setImageDrawable(taskInfo.getIcon());
             if (taskInfo.getId() == mTopTaskId) {
-                holder.mHighLightLineTV.setImageResource(R.drawable.line_long);
+                holder.highLightLineTV.setImageResource(R.drawable.line_long);
             } else {
-                holder.mHighLightLineTV.setImageResource(R.drawable.line_short);
+                holder.highLightLineTV.setImageResource(R.drawable.line_short);
             }
-            holder.mIconIV.setOnClickListener(
+            holder.iconIV.setOnClickListener(
                     v -> mActivityManager.moveTaskToFront(taskInfo.getId(), 0)
             );
         }
@@ -191,14 +189,14 @@ public class AppStateLayout extends RecyclerView {
             mTopTaskId = id;
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            private ImageView mIconIV;
-            private ImageView mHighLightLineTV;
+        private static class ViewHolder extends RecyclerView.ViewHolder {
+            public final ImageView iconIV;
+            public final ImageView highLightLineTV;
 
             public ViewHolder(@NonNull ViewGroup taskInfoLayout) {
                 super(taskInfoLayout);
-                mIconIV = taskInfoLayout.findViewById(R.id.iv_task_info_icon);
-                mHighLightLineTV = taskInfoLayout.findViewById(R.id.iv_highlight_line);
+                iconIV = taskInfoLayout.findViewById(R.id.iv_task_info_icon);
+                highLightLineTV = taskInfoLayout.findViewById(R.id.iv_highlight_line);
             }
         }
     }
