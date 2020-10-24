@@ -6,7 +6,8 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     persist.sys.bd.tunerkeys=sysui_nav_bar--sysui_nav_bar_left--sysui_nav_bar_right\
 
 PRODUCT_PACKAGES := \
-    BoringdroidSystemUI
+    BoringdroidSystemUI \
+    BoringdroidSettings
 
 PRODUCT_COPY_FILES := \
     frameworks/native/data/etc/android.software.freeform_window_management.xml:system/etc/permissions/android.software.freeform_window_management.xml
